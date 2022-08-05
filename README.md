@@ -131,7 +131,7 @@ To test your service, you can start sending messages to `In Queue`. You can use 
 
 To send messages, you can either:
 
-- use AWS Console, go to Simple Queue Service, find a queue with `InQueue` in its name, then go to `Send and receive messages`
+- use AWS Console, go to Amazon SQS, find a queue with `InQueue` in its name, then go to `Send and receive messages`
 - use AWS CLI, for example
   - `aws sqs send-message --queue-url <YOUR QUEUE URL> --message-body file://test/testMessage.json`
 
