@@ -38,7 +38,7 @@ There also is an API Gateway for admin purposes, however another API Gateway may
 Each entry represents an achieved achievement by a player with player ID
 
 | PK: playerId      | SK: id                | achievedAt |
-|-------------------| --------------------- |------------|
+|-------------------|-----------------------|------------|
 | string: player ID | string achievement ID | timestamp  |
 
 #### Player Progress Entries
@@ -46,7 +46,7 @@ Each entry represents an achieved achievement by a player with player ID
 Each entry represents current progress for specific progress with progress ID by a player with player ID
 
 | PK: playerId      | SK: id              | progress                 | lastUpdated |
-|-------------------| ------------------- | ------------------------ |-------------|
+|-------------------|---------------------|--------------------------|-------------|
 | string: player ID | string: progress ID | number: current progress | timestamp   |
 
 ### Admin Data Table (1 table, 1 entry type)
@@ -67,7 +67,7 @@ Each entry represents an achievement and its requirement, a requirement has prog
 Each entry represents a message from In Queue, a message only stays in this table for 5 minutes, this is used for duplication check
 
 | PK: messageId          | TTL: ttl              |
-|------------------------| --------------------- |
+|------------------------|-----------------------|
 | string: sqs message ID | number: ttl timestamp |
 
 ## SQS Message Syntax
