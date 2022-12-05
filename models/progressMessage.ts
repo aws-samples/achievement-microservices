@@ -3,7 +3,7 @@ import {pk, Table} from "./tableDecorator";
 @Table("ProgressMessage")
 export class ProgressMessage {
     @pk
-    message_id: string;
+    messageId: string;
     ttl: number;
 }
 

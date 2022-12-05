@@ -24,14 +24,14 @@ const outQueueUrl = process.env.OUT_QUEUE_URL || "";
 const progressMessageTTL = 5 * 60 * 1000;
 
 interface InMessage {
-  player_id: string;
-  progress_id: string;
-  progress_increment: number;
+  playerId: string;
+  progressId: string;
+  progressIncrement: number;
 }
 
 interface OutMessage {
-  player_id: string;
-  achievement_id: string;
+  playerId: string;
+  achievementId: string;
 }
 
 export const handler: SQSHandler = async ({
@@ -55,7 +55,7 @@ export const handler: SQSHandler = async ({
 
 async function updateProgress(
   messageId: string,
-  { player_id, progress_id, progress_increment }: InMessage,
+  { playerId, progressId, progressIncrement }: InMessage,
   timeStamp: number
 ) {
   const playerDataPk = keyMap.get(PlayerData)!.get(Keys.PK)!;
@@ -72,7 +72,7 @@ async function updateProgress(
           new Date(Date.now() + progressMessageTTL).getTime() / 1000
         ),
       },
-      ConditionExpression: "attribute_not_exists(message_id)",
+      ConditionExpression: "attribute_not_exists(messageId)",
       ReturnValuesOnConditionCheckFailure: "ALL_OLD",
     },
   };
@@ -80,19 +80,19 @@ async function updateProgress(
     Update: {
       TableName: playerDataTableName,
       Key: {
-        [playerDataPk]: player_id,
-        [playerDataSk]: progress_id,
+        [playerDataPk]: playerId,
+        [playerDataSk]: progressId,
       },
       UpdateExpression:
-        "SET #progress = if_not_exists(progress, :zero) + :progress_increment," +
-        " #last_updated = :last_updated",
+        "SET #progress = if_not_exists(progress, :zero) + :progressIncrement," +
+        " #lastUpdated = :lastUpdated",
       ExpressionAttributeNames: {
         "#progress": "progress",
-        "#last_updated": "last_updated",
+        "#lastUpdated": "lastUpdated",
       },
       ExpressionAttributeValues: {
-        ":progress_increment": progress_increment,
-        ":last_updated": timeStamp,
+        ":progressIncrement": progressIncrement,
+        ":lastUpdated": timeStamp,
         ":zero": 0,
       },
     },
@@ -124,8 +124,8 @@ async function updateProgress(
   const getProgressParams: DocumentClient.GetItemInput = {
     TableName: playerDataTableName,
     Key: {
-      [playerDataPk]: player_id,
-      [playerDataSk]: progress_id,
+      [playerDataPk]: playerId,
+      [playerDataSk]: progressId,
     },
   };
 
@@ -140,7 +140,7 @@ async function updateProgress(
       "#progress": gsiKeyMap.get(AchievementData)!.get(Keys.PK)!,
     },
     ExpressionAttributeValues: {
-      ":v_progress": progress_id,
+      ":v_progress": progressId,
     },
   };
 
@@ -151,19 +151,19 @@ async function updateProgress(
   }
 
   for (const {
-    achievement_id,
-    required_amount,
+    achievementId,
+    requiredAmount,
   } of Items as AchievementData[]) {
-    if (required_amount > progress) {
+    if (requiredAmount > progress) {
       return;
     }
 
     const achievedParams: DocumentClient.PutItemInput = {
       TableName: tableMap.get(PlayerData)!,
       Item: {
-        [playerDataPk]: player_id,
-        [playerDataSk]: achievement_id,
-        achieved_at: timeStamp,
+        [playerDataPk]: playerId,
+        [playerDataSk]: achievementId,
+        achievedAt: timeStamp,
       },
       ConditionExpression: `attribute_not_exists(${keyMap
         .get(PlayerData)!
@@ -175,8 +175,8 @@ async function updateProgress(
       await outSQS
         .sendMessage({
           MessageBody: JSON.stringify({
-            player_id,
-            achievement_id,
+            playerId,
+            achievementId,
           } as OutMessage),
           QueueUrl: outQueueUrl,
         })

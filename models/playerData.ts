@@ -3,20 +3,20 @@ import { Table, pk, sk } from "./tableDecorator";
 @Table("PlayerData")
 export class PlayerData {
   @pk
-  player_id: string;
+  playerId: string;
   @sk
   id: string;
 }
 
 export class PlayerAchievement extends PlayerData {
-  player_id: string;
+  playerId: string;
   id: string;
-  achieved_at: number;
+  achievedAt: number;
 }
 
 export class PlayerProgress extends PlayerData {
-  player_id: string;
+  playerId: string;
   id: string;
   progress: number;
-  last_updated: number;
+  lastUpdated: number;
 }

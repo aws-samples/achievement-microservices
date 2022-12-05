@@ -1,12 +1,12 @@
 import { GSI, gsiPk, gsiSk, Table, pk } from "./tableDecorator";
 
 @Table("AchievementData")
-@GSI("progress_index")
+@GSI("progressIndex")
 export class AchievementData {
   @pk
-  achievement_id: string;
+  achievementId: string;
   @gsiPk
-  required_progress: string;
+  requiredProgress: string;
   @gsiSk
-  required_amount: number;
+  requiredAmount: number;
 }

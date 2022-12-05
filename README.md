@@ -37,17 +37,17 @@ There also is an API Gateway for admin purposes, however another API Gateway may
 
 Each entry represents an achieved achievement by a player with player ID
 
-| PK: player_id     | SK: id                | achieved_at |
-| ----------------- | --------------------- | ----------- |
-| string: player ID | string achievement ID | timestamp   |
+| PK: playerId      | SK: id                | achievedAt |
+|-------------------| --------------------- |------------|
+| string: player ID | string achievement ID | timestamp  |
 
 #### Player Progress Entries
 
 Each entry represents current progress for specific progress with progress ID by a player with player ID
 
-| PK: player_id     | SK: id              | progress                 | last_updated |
-| ----------------- | ------------------- | ------------------------ | ------------ |
-| string: player ID | string: progress ID | number: current progress | timestamp    |
+| PK: playerId      | SK: id              | progress                 | lastUpdated |
+|-------------------| ------------------- | ------------------------ |-------------|
+| string: player ID | string: progress ID | number: current progress | timestamp   |
 
 ### Admin Data Table (1 table, 1 entry type)
 
@@ -56,9 +56,9 @@ Each entry represents current progress for specific progress with progress ID by
 Each entry represents an achievement and its requirement, a requirement has progress ID and required amount of progress
 
 
-| PK: achievement_id     | GSI PK: required_progress | GSI SK: required_amount |
-| ---------------------- | ------------------------- | ----------------------- |
-| string: achievement ID | string: progress ID       | number: required amount |
+| PK: achievementId      | GSI PK: requiredProgress | GSI SK: requiredAmount  |
+|------------------------|--------------------------|-------------------------|
+| string: achievement ID | string: progress ID      | number: required amount |
 
 ### Progress Message Table (1 table, 1 entry type)
 
@@ -66,8 +66,8 @@ Each entry represents an achievement and its requirement, a requirement has prog
 
 Each entry represents a message from In Queue, a message only stays in this table for 5 minutes, this is used for duplication check
 
-| PK: message_id         | TTL: ttl              |
-| ---------------------- | --------------------- |
+| PK: messageId          | TTL: ttl              |
+|------------------------| --------------------- |
 | string: sqs message ID | number: ttl timestamp |
 
 ## SQS Message Syntax
@@ -76,9 +76,9 @@ Each entry represents a message from In Queue, a message only stays in this tabl
 
 ```
 {
-    “player_id”: string,
-    “progress_id”: string,
-    “progress_increment”: number,
+    “playerId”: string,
+    “progressId”: string,
+    “progressIncrement”: number,
 }
 ```
 
@@ -86,8 +86,8 @@ Each entry represents a message from In Queue, a message only stays in this tabl
 
 ```
 {
-    “player_id”: string,
-    “achievement_id”: string,
+    “playerId”: string,
+    “achievementId”: string,
 }
 ```
 
@@ -111,9 +111,9 @@ Once the deployment is completed, you should be able to locate API Gateway url i
 
 ```
 {
-    "achievement_id": "a1",
-    "required_progress": "p1",
-    "required_amount": 3,
+    "achievementId": "a1",
+    "requiredProgress": "p1",
+    "requiredAmount": 3,
 }
 ```
 
@@ -122,7 +122,7 @@ With `curl`:\
 ```
 $ curl -XPOST https://<YOUR ENDPOINT>/prod/achievements \
   -H "Content-Type: application/json" \
-  -d '{"achievement_id": "a1", "required_progress": "p1", "required_amount": 3}'
+  -d '{"achievementId": "a1", "requiredProgress": "p1", "requiredAmount": 3}'
 ```
 
 ### Send Progress Events
