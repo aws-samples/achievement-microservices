@@ -10,7 +10,7 @@ import {
   tableMap,
 } from "../models/tableDecorator";
 import { ProgressMessage } from "../models/progressMessage";
-import { PlayerData, PlayerProgress } from "../models/playerData";
+import { PlayerData, PlayerProgress, Prefix } from "../models/playerData";
 import {
   SQSBatchItemFailure,
   SQSBatchResponse,
@@ -81,7 +81,7 @@ async function updateProgress(
       TableName: playerDataTableName,
       Key: {
         [playerDataPk]: playerId,
-        [playerDataSk]: progressId,
+        [playerDataSk]: Prefix.progress + progressId,
       },
       UpdateExpression:
         "SET #progress = if_not_exists(progress, :zero) + :progressIncrement," +
@@ -125,7 +125,7 @@ async function updateProgress(
     TableName: playerDataTableName,
     Key: {
       [playerDataPk]: playerId,
-      [playerDataSk]: progressId,
+      [playerDataSk]: Prefix.progress + progressId,
     },
   };
 
@@ -150,10 +150,7 @@ async function updateProgress(
     return;
   }
 
-  for (const {
-    achievementId,
-    requiredAmount,
-  } of Items as AchievementData[]) {
+  for (const { achievementId, requiredAmount } of Items as AchievementData[]) {
     if (requiredAmount > progress) {
       return;
     }
@@ -162,7 +159,7 @@ async function updateProgress(
       TableName: tableMap.get(PlayerData)!,
       Item: {
         [playerDataPk]: playerId,
-        [playerDataSk]: achievementId,
+        [playerDataSk]: Prefix.achievement + achievementId,
         achievedAt: timeStamp,
       },
       ConditionExpression: `attribute_not_exists(${keyMap
