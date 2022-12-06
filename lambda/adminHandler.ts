@@ -48,16 +48,16 @@ export const handler: APIGatewayProxyHandler = async ({
 };
 
 async function post({
-  achievement_id,
-  required_progress,
-  required_amount,
+  achievementId,
+  requiredProgress,
+  requiredAmount,
 }: AchievementData) {
   const achievementDataParams: DocumentClient.PutItemInput = {
     TableName: tableMap.get(AchievementData)!,
     Item: {
-      [keyMap.get(AchievementData)!.get(Keys.PK)!]: achievement_id,
-      required_progress,
-      required_amount,
+      [keyMap.get(AchievementData)!.get(Keys.PK)!]: achievementId,
+      requiredProgress,
+      requiredAmount,
     },
   };
   await db.put(achievementDataParams).promise();
@@ -66,12 +66,12 @@ async function post({
 async function get(playerId: string) {
   const playerDataParams: DocumentClient.QueryInput = {
     TableName: tableMap.get(PlayerData)!,
-    KeyConditionExpression: "#player_id = :player_id",
+    KeyConditionExpression: "#playerId = :playerId",
     ExpressionAttributeNames: {
-      "#player_id": keyMap.get(PlayerData)!.get(Keys.PK)!,
+      "#playerId": keyMap.get(PlayerData)!.get(Keys.PK)!,
     },
     ExpressionAttributeValues: {
-      ":player_id": playerId,
+      ":playerId": playerId,
     },
   };
   const { Items } = await db.query(playerDataParams).promise();
