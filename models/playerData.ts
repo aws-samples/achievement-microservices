@@ -20,3 +20,8 @@ export class PlayerProgress extends PlayerData {
   progress: number;
   lastUpdated: number;
 }
+
+export enum Prefix {
+  achievement = "achievement_",
+  progress = "progress_",
+}
